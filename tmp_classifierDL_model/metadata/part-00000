@@ -1,0 +1,1 @@
+{"class":"com.johnsnowlabs.nlp.annotators.classifier.dl.ClassifierDLModel","timestamp":1614320546713,"sparkVersion":"2.4.4","uid":"ClassifierDLModel_7f2530b7d307","paramMap":{"inputCols":["sentence_embeddings"],"storageRef":"tfhub_use","outputCol":"class"},"defaultParamMap":{"storageRef":"ClassifierDLModel_7f2530b7d307","lazyAnnotator":false}}

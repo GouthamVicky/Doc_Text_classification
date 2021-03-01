@@ -2,7 +2,6 @@ from typing import Optional
 from fastapi import FastAPI , Depends
 from pydantic import BaseModel
 import uvicorn
-from Address_bert import address_nlp
 import os
 from pyspark.sql import SparkSession
 from pyspark.ml import Pipeline
@@ -11,7 +10,6 @@ from sparknlp.common import *
 from sparknlp.base import *
 import sparknlp
 import numpy as np 
-import preandpost
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
 from fastapi import Response, status
@@ -62,7 +60,7 @@ async def startup_event():
 
 
 @app.post("/text/classification/")
-def textclassify(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
+def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:
         response.status_code=status.HTTP_401_UNAUTHORIZED
         return "Unauthorized access"

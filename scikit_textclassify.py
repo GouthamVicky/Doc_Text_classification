@@ -66,9 +66,12 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         print(text)
         value=[text]
         print(value)
-        text_class=model.predict(value)
-        text_class=text_class.tolist()
-        json = {"class": text_class[0]}
+        if "gas" in text.lower() or "oil" in text.lower() or "refill" in text.lower():
+            text_class=['Gas Bills']
+        else:
+            text_class=model.predict(value)
+            text_class=text_class.tolist()
+        json = {"class": text_class[0].capitalize()}
         print(json)
         return json
 

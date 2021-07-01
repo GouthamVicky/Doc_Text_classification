@@ -67,20 +67,20 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         print(text)
         value=[text]
         print(value)
-        if " gas " in text.lower() or " oil " in text.lower() or " refill " in text.lower() or "gas" in text.lower() or "oil" in text.lower() or "refill" in text.lower():
-            text_class=['Gas Bills']
+        text_class=model.predict(value)
+    
+        print(text_class)
+        total_score=model.predict_proba(value)
+        print(total_score)
+        score =model.predict_proba(value)[:, 1]
+        score=score.tolist()
+        print(score)
+        confidence_threshold=int(str(score[0]).split(".")[0])
+        if confidence_threshold >0:
+            text_class=text_class.tolist()
         else:
-            text_class=model.predict(value)
-        
-            print(text_class)
-            total_score=model.predict_proba(value)
-            print(total_score)
-            score =model.predict_proba(value)[:, 1]
-            score=score.tolist()
-            print(score)
-            confidence_threshold=int(str(score[0]).split(".")[0])
-            if confidence_threshold >0:
-                text_class=text_class.tolist()
+            if " gas " in text.lower() or " oil " in text.lower() or " refill " in text.lower() or "gas" in text.lower() or "oil" in text.lower() or "refill" in text.lower():
+                text_class=['Gas Bills']
             else:
                 text_class=["Cannot be Classified"]
                 response.status_code = status.HTTP_424_FAILED_DEPENDENCY

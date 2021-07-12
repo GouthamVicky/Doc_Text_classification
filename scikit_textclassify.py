@@ -84,6 +84,17 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             else:
                 text_class=["Cannot be Classified"]
                 response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+        
+        if text_class[0]=="aadhar":
+            text_class[0]="Aadhar Card"
+
+        elif text_class[0]=="drivingLicense":
+            text_class[0]="Driving License"
+
+        elif text_class[0]=="voterID":
+            text_class[0]="Voter ID"
+        else:
+            pass
         json = {"class": text_class[0].capitalize()}
         print(json)
         return json

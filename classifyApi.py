@@ -29,8 +29,6 @@ async def check(response: Response):
     return "Working"
 
 
-
-
 @app.post("/text/classification/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:
@@ -106,4 +104,4 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
 
 if __name__ == "__main__":
-    uvicorn.run("scikit_textclassify:app", host="0.0.0.0",port=19014, log_level="info", workers=1)
+    uvicorn.run("classifyApi:app", host="0.0.0.0",port=19014, log_level="info", workers=1)

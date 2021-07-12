@@ -95,7 +95,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             text_class[0]="Voter ID"
         else:
             pass
-        json = {"class": text_class[0].capitalize()}
+        json = {"class": text_class[0]}
         print(json)
         return json
 

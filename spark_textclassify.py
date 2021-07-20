@@ -17,7 +17,7 @@ from doc2text import pdf_to_text,image_to_text
 import shutil
 from fastapi import File, UploadFile
 from PIL import Image
-
+from classprediction import classpredict
 app = FastAPI()
 
 
@@ -91,8 +91,8 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
             text=pdf_to_text(documentName)
 
-        text_class=(text,spark,pipeline)
-
+        text_class=classpredict(text,spark,pipeline)
+        print(text_class)
         json={"class":text_class}
         
         return json
@@ -104,4 +104,4 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         
 
 if __name__ == "__main__":
-    uvicorn.run("textclassify:app", host="0.0.0.0",port=19014, log_level="info", workers=4)
+    uvicorn.run("classifyApi:app", host="0.0.0.0",port=19014, log_level="info", workers=4)

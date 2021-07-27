@@ -105,27 +105,19 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             text_class=text_class.tolist()
         else:
             if " gas " in text.lower() or " oil " in text.lower() or " refill " in text.lower() or "gas" in text.lower() or "oil" in text.lower() or "refill" in text.lower():
-                text_class=['Cannot be Classified']
-                response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+                text_class=['Gas Bills']
             else:
-                if text_class=="bankPassbook" and [" bank " in text.lower() or "pass book" in text.lower() or "Cheque" in text.lower()]:
-                    text_class=["bankPassbook"]
-                else:
-
-                    text_class=["Cannot be Classified"]
-                    response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+                text_class=["Cannot be Classified"]
+                response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         
         if text_class[0]=="aadhar":
-            text_class[0]="Cannot be Classified"
-            response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+            text_class[0]="Aadhar Card"
 
         elif text_class[0]=="drivingLicense":
-            text_class[0]="Cannot be Classified"
-            response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+            text_class[0]="Driving License"
 
         elif text_class[0]=="voterID":
-            text_class[0]="Cannot be Classified"
-            response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+            text_class[0]="Voter ID"
         else:
             pass
         json = {"class": text_class[0]}

@@ -19,11 +19,11 @@ from sparknlp.base import *
 from sparknlp.annotator import *
 from pyspark.ml import Pipeline
 import pyspark.sql.functions as F
-import nltk
-from nltk.corpus import stopwords
+#import nltk
+#from nltk.corpus import stopwords
 import re
 from bs4 import BeautifulSoup
-nltk.download('stopwords')
+#nltk.download('stopwords')
 app = FastAPI()
 
 
@@ -41,7 +41,9 @@ async def check(response: Response):
 
 REPLACE_BY_SPACE_RE = re.compile('[/(){}\[\]\|@,;]')
 BAD_SYMBOLS_RE = re.compile('[^0-9a-z #+_]')
-STOPWORDS = set(stopwords.words('english'))
+STOPWORDS=['the', 'what', 'ours', 'her', 'be', 'during', 'theirs', 'being', 'wasn', 'on', 'aren', 'hers', 'needn', 'you', 'by', 'after', 'very', 'a', "haven't", 'other', 'been', 're', 'not', "that'll", 'yourself', 'have', 'few', 'this', 'why', 'their', 'can', 'of', 'had', 'between', 'where', 'did', 'just', 'because', 'out', 'having', 'mightn', 'under', 'through', 'ain', 'about', 'nor', "you've", 'each', 'most', "hasn't", 'haven', "mightn't", 'if', 'against', 'no', "she's", 'his', 'm', "you'd", 'there', 'who', 'o', 'how', 'any', 'or', 'same', 'we', 'that', 'is', 'shouldn', 'weren', "weren't", 'wouldn', "isn't", "shan't", "hadn't", 'he', 'itself', 'so', 'to', "it's", 'and', "should've", 'has', 'she', 'some', 'isn', 'again', 'only', 'own', 'doesn', "won't", 'am', 'whom', 'for', 'your', 'd', 'y', 'shan', 'does', 've', 'them', 'down', 'ma', "mustn't", 'further', 'from', 'over', 'off', 'in', 'should', 'didn', 'they', 'ourselves', 'it', "didn't", "doesn't", "aren't", 'which', 'yourselves', 'doing', "you're", 'those', "needn't", 'i', 'all', 'below', 'into', 'as', 'more', 's', 'was', 'until', 'before', "you'll", 'him', 'themselves', 'do', 'mustn', 'but', 'will', 'above', 'myself', 'now', 'couldn', 'my', "shouldn't", 'at', 'than', 'both', 'our', 'with', "don't", 'yours', "wasn't", 'don', "couldn't", 'here', 'won', 'when', 'll', 'hadn', 'me', 'then', 
+'t', 'too', 'are', "wouldn't", 'were', 'hasn', 'while', 'herself', 'once', 'its', 'these', 'such', 'himself', 'an', 'up']
+
 
 def clean_text(text):
     text = BeautifulSoup(text, "lxml").text # HTML decoding

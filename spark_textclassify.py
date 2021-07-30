@@ -101,6 +101,70 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         error=str(e)
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return{"error": error, "status": "unable to extract data"}
+    
+@app.post("/text/classification/utility/")
+def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
+    if token != bearer_token:
+        response.status_code=status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized access"
+    
+    if (file.filename.split('.')[-1]) not in all_file_types_allowed:
+        response.status_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+        return "Invalid Document"
+    else:
+        pass
+    
+    
+    if (file.filename.split('.')[-1]) in file_types_allowed:
+        print("================ > Image Flow < ================")
+        print(file.filename)
+        documentName='/tmp/'+file.filename
+        im=Image.open(file.file)
+        im.save(documentName)
+
+        text=image_to_text(documentName)
+    
+    else:
+        print("==============>PDF FLOW<===================")
+        print(file.filename)
+        documentName='/tmp/'+file.filename
+
+        with open(documentName, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        text=pdf_to_text(documentName)
+
+    text_class=classpredict(text,spark,use_clf_pipeline)
+    print(text_class)
+    total_score=[]
+    score=[]
+    print("The total score is printing========>",total_score)
+    score =classpredict.predict_proba()[:, 1]
+    score=score.tolist()
+    print("The Final probab score======>",score)
+    confidence_threshold=int(str(score[0]).split(".")[0])
+    print(confidence_threshold)
+    
+    print(confidence_threshold)
+    
+    if confidence_threshold >0.45:
+        text_class=text_class.tolist()
+    else:
+
+        print("LESSER CONFIDENCE FLOW")
+        if "Jio DIGITAL LIFE" in text.lower() or "JioPostPaid Plus" in text.lower() or "Jio Number" in text.lower() or "Vodafone India Ltd Company" in text.lower() or "NNECT BROADBAND " in text.lower() or "MAHANAGAR TELEPHONE NIGAM LIMITED" in text.lower() or "TATA DOCOMO" in text.lower() or "BHARAT SANCHAR" in text.lower() or "net+ BROADBAND" in text.lower():
+            print("This is PhoneBill")
+            text_class= ["phonebill"]
+            
+        elif text_class=="bankPassbook" and " bank " in text.lower().split(" ") or "pass book" in text.lower().split(" ") or "Cheque" in text.lower().split(" "):
+            text_class=["bankPassbook"]
+        
+        elif text_class=="bankstatement  "and "bank" in text.lower().split(" "):
+            text_class=["bankstatement"]
+        
+        else:
+            text_class=["Cannot be Classified"]
+            response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         
 
 if __name__ == "__main__":

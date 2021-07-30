@@ -57,7 +57,7 @@ async def startup_event():
             use,
             classsifierdl
         ])
-    ocument_1 = DocumentAssembler()\
+    document_1 = DocumentAssembler()\
       .setInputCol("category")\
       .setOutputCol("document")
 

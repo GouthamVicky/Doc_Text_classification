@@ -57,6 +57,26 @@ async def startup_event():
             use,
             classsifierdl
         ])
+    ocument_1 = DocumentAssembler()\
+      .setInputCol("category")\
+      .setOutputCol("document")
+
+    # we can also use sentece detector here if we want to train on and get predictions for each sentence
+    use_1= UniversalSentenceEncoder.load("sparkmodel/usemodel-20210727T105431Z-001/usemodel/use")\
+        .setInputCols("sentence","token")\
+        .setOutputCol("embedding")
+
+    # the classes/labels/categories are in category column
+    classsifierdl_1 = ClassifierDLApproach.load("sparkmodel/usemodel-20210727T105431Z-001/usemodel/classiferdl")\
+        .setInputCols("sentence","token","embedding")\
+        .setOutputCol("class")
+    global use_clf_pipeline
+    use_clf_pipeline = Pipeline(
+        stages = [
+            document_1,
+            use_1,
+            classsifierdl_1
+        ])
 
 
 @app.post("/text/classification/")

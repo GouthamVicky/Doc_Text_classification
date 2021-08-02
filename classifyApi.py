@@ -211,5 +211,6 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         return{"error": error, "status": "unable to extract data"}
 
 
+
 if __name__ == "__main__":
     uvicorn.run("classifyApi:app", host="0.0.0.0",port=19014, log_level="info", workers=1)

@@ -14,11 +14,6 @@ from PIL import Image
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from joblib import load
-import sparknlp
-from sparknlp.base import *
-from sparknlp.annotator import *
-from pyspark.ml import Pipeline
-import pyspark.sql.functions as F
 #import nltk
 #from nltk.corpus import stopwords
 import re
@@ -145,7 +140,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
     try:
         if (file.filename.split('.')[-1]) in file_types_allowed:
-            spark = sparknlp.start()
+            
             print("================ > Image Flow < ================")
             print(file.filename)
             documentName = '/tmp/'+file.filename
@@ -155,7 +150,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             text = image_to_text(documentName)
 
         else:
-            spark = sparknlp.start()
+            
             print("==============>PDF FLOW<===================")
             print(file.filename)
             documentName = '/tmp/'+file.filename

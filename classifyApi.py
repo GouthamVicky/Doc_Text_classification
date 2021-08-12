@@ -145,6 +145,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
     try:
         if (file.filename.split('.')[-1]) in file_types_allowed:
+            spark = sparknlp.start()
             print("================ > Image Flow < ================")
             print(file.filename)
             documentName = '/tmp/'+file.filename
@@ -154,6 +155,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             text = image_to_text(documentName)
 
         else:
+            spark = sparknlp.start()
             print("==============>PDF FLOW<===================")
             print(file.filename)
             documentName = '/tmp/'+file.filename
@@ -181,20 +183,28 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         
         print(confidence_threshold)
         
-        if confidence_threshold >0:
+        if confidence_threshold>0:
+            
             text_class=text_class.tolist()
         else:
 
             print("LESSER CONFIDENCE FLOW")
-            if "Jio DIGITAL LIFE" in text.lower() or "JioPostPaid Plus" in text.lower() or "Jio Number" in text.lower() or "Vodafone India Ltd Company" in text.lower() or "NNECT BROADBAND " in text.lower() or "MAHANAGAR TELEPHONE NIGAM LIMITED" in text.lower() or "TATA DOCOMO" in text.lower() or "BHARAT SANCHAR" in text.lower() or "net+ BROADBAND" in text.lower():
+            if "Jio DIGITAL LIFE" in text.lower() or "JioPostPaid Plus" in text.lower() or "Jio Number" in text.lower() or "Vodafone India Ltd Company" in text.lower() or "NNECT BROADBAND " in text.lower() or "MAHANAGAR TELEPHONE NIGAM LIMITED" in text.lower() or "TATA DOCOMO" in text.lower() or "BHARAT SANCHAR" in text.lower() or "net+ BROADBAND" in text.lower() or "broadband" in text.lower():
                 print("This is PhoneBill")
                 text_class= ["phonebill"]
                 
             elif text_class=="bankPassbook" and " bank " in text.lower().split(" ") or "pass book" in text.lower().split(" ") or "Cheque" in text.lower().split(" "):
                 text_class=["bankPassbook"]
-            
-            elif text_class=="bankstatement  "and "bank" in text.lower().split(" "):
+            elif "kw" in text.lower() or "kwh" in text.lower() or "kvah" in text.lower() or "tangedco" in text.lower():
+                text_class=["electricitybill"]
+            elif text_class=="bankstatement  "and "bank"  in text.lower().split(" "):
                 text_class=["bankstatement"]
+            elif "account statement" in text.lower() or "statement account" in text.lower() or "transaction" in text.lower():
+                text_class=["bankstatement"]
+            
+
+
+
             
             else:
                 text_class=["Cannot be Classified"]

@@ -140,7 +140,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
     try:
         if (file.filename.split('.')[-1]) in file_types_allowed:
-            
+            spark = sparknlp.start()
             print("================ > Image Flow < ================")
             print(file.filename)
             documentName = '/tmp/'+file.filename
@@ -150,7 +150,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             text = image_to_text(documentName)
 
         else:
-            
+            spark = sparknlp.start()
             print("==============>PDF FLOW<===================")
             print(file.filename)
             documentName = '/tmp/'+file.filename
@@ -184,7 +184,9 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         else:
 
             print("LESSER CONFIDENCE FLOW")
-            if "Jio DIGITAL LIFE" in text.lower() or "JioPostPaid Plus" in text.lower() or "Jio Number" in text.lower() or "Vodafone India Ltd Company" in text.lower() or "NNECT BROADBAND " in text.lower() or "MAHANAGAR TELEPHONE NIGAM LIMITED" in text.lower() or "TATA DOCOMO" in text.lower() or "BHARAT SANCHAR" in text.lower() or "net+ BROADBAND" in text.lower() or "broadband" in text.lower():
+            if "account statement" in text.lower() or "statement account" in text.lower() or "transaction" in text.lower() or "statement period" in text.lower():
+                text_class=["bankstatement"]
+            elif "Jio DIGITAL LIFE" in text.lower() or "JioPostPaid Plus" in text.lower() or "Jio Number" in text.lower() or "Vodafone India Ltd Company" in text.lower() or "NNECT BROADBAND " in text.lower() or "MAHANAGAR TELEPHONE NIGAM LIMITED" in text.lower() or "TATA DOCOMO" in text.lower() or "BHARAT SANCHAR" in text.lower() or "net+ BROADBAND" in text.lower() or "broadband" in text.lower() or "telephone" in text.lower() :
                 print("This is PhoneBill")
                 text_class= ["phonebill"]
                 
@@ -193,8 +195,6 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             elif "kw" in text.lower() or "kwh" in text.lower() or "kvah" in text.lower() or "tangedco" in text.lower():
                 text_class=["electricitybill"]
             elif text_class=="bankstatement  "and "bank"  in text.lower().split(" "):
-                text_class=["bankstatement"]
-            elif "account statement" in text.lower() or "statement account" in text.lower() or "transaction" in text.lower():
                 text_class=["bankstatement"]
             
 
@@ -214,7 +214,6 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         error = str(e)
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return{"error": error, "status": "unable to extract data"}
-
 
 
 if __name__ == "__main__":

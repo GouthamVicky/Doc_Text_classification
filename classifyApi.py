@@ -140,7 +140,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
     try:
         if (file.filename.split('.')[-1]) in file_types_allowed:
-            spark = sparknlp.start()
+            
             print("================ > Image Flow < ================")
             print(file.filename)
             documentName = '/tmp/'+file.filename
@@ -150,7 +150,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             text = image_to_text(documentName)
 
         else:
-            spark = sparknlp.start()
+            
             print("==============>PDF FLOW<===================")
             print(file.filename)
             documentName = '/tmp/'+file.filename
@@ -214,6 +214,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         error = str(e)
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return{"error": error, "status": "unable to extract data"}
+
 
 
 if __name__ == "__main__":

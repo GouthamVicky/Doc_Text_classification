@@ -77,6 +77,14 @@ async def startup_event():
             use_1,
             classsifierdl_1
         ])
+    
+    
+    
+    
+    
+    
+    
+    
 
 
 @app.post("/text/classification/")

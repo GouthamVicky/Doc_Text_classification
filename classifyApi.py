@@ -214,6 +214,86 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         error = str(e)
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return{"error": error, "status": "unable to extract data"}
+      
+@app.post("/text/GST_classifier/")
+def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
+    if token != bearer_token:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized access"
+
+    if (file.filename.split('.')[-1]) not in all_file_types_allowed:
+        response.status_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+        return "Invalid Document"
+    else:
+        pass
+
+    try:
+        if (file.filename.split('.')[-1]) in file_types_allowed:
+            print("================ > Image Flow < ================")
+            print(file.filename)
+            documentName = '/tmp/'+file.filename
+            im = Image.open(file.file)
+            im.save(documentName)
+
+            text = image_to_text(documentName)
+
+        else:
+            print("==============>PDF FLOW<===================")
+            print(file.filename)
+            documentName = '/tmp/'+file.filename
+
+            with open(documentName, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+
+            text = pdf_to_text(documentName)
+
+        text=clean_text(text)
+        model = load("logreg_text_classification.pkl")
+        print(text)
+        value=[text]
+        print(value)
+        text_class=model.predict(value)
+    
+        print(text_class)
+        total_score=model.predict_proba(value)
+        print(total_score)
+        score =model.predict_proba(value)[:, 1]
+        score=score.tolist()
+        print(score)
+        confidence_threshold=int(str(score[0]).split(".")[0])
+        if confidence_threshold >0:
+            print("The confidence is high======>")
+            text_class=text_class.tolist()
+            if text_class==["bankStatement"] or text_class==["bankPassbook"] or text_class==["electricityBill"] or text_class==["phoneBill"] or text_class==["rentalAgreement"]:
+                text_class=['Cannot be Classified']
+                response.status_code = status.HTTP_424_FAILED_DEPENDENCY    
+            else:
+                pass
+
+        else:
+            print("Lower Confidence class==========>")
+            if " gas " in text.lower() or " oil " in text.lower() or " refill " in text.lower() or "gas" in text.lower() or "oil" in text.lower() or "refill" in text.lower():
+                text_class=['Cannot be Classified']
+                response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+            elif text_class=="unique identification authority india" in text.lower() or "uidai" in text.lower():
+
+                text_class=["aadhar"]
+            elif text_class=="permanent account number" in text.lower():
+                text_class=["pan"]
+            else:
+                text_class=["Cannot be Classified"]
+                response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+        
+        
+        json = {"class": text_class[0]}
+        print(json)
+        return json
+
+    except Exception as e:
+        error = str(e)
+        response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+        return{"error": error, "status": "unable to extract data"}
+
 
 
 

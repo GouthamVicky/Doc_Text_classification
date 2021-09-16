@@ -175,7 +175,10 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
     
     print(confidence_threshold)
     
-    if confidence_threshold >0.45:
+    if " gas " in text.lower() or " oil " in text.lower() or " refill " in text.lower() or "gas" in text.lower() or "oil" in text.lower() or "refill" in text.lower():
+                text_class=['gasbill']
+
+    elif confidence_threshold>0.45:
         text_class=text_class.tolist()
     else:
 

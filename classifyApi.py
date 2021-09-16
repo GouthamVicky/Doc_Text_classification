@@ -158,14 +158,18 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             with open(documentName, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
 
-            text = pdf_to_text(documentName)
+            text= pdf_to_text(documentName)
+            print("the text_1====>",text)
 
         text=clean_text(text)
         print("The text is printing=======>",text)
+        
         value=[text]
         print(value)
         model=load("Pvt_text_classification.pkl")
         text_class=model.predict(value)
+        
+        
     
         print(text_class)
         total_score=model.predict_proba(value)
@@ -178,13 +182,22 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         
         print(confidence_threshold)
         
-        if confidence_threshold>0:
-            
+        if " gas " in text.lower() or " oil " in text.lower() or " refill " in text.lower() or "gas" in text.lower() or "oil" in text.lower() or "refill" in text.lower():
+                text_class=['gasbill']
+
+        elif confidence_threshold>0:
+
             text_class=text_class.tolist()
+        
+        
         else:
 
             print("LESSER CONFIDENCE FLOW")
-            if "account statement" in text.lower() or "statement account" in text.lower() or "transaction" in text.lower() or "statement period" in text.lower():
+            if " gas " in text.lower() or " oil " in text.lower() or " refill " in text.lower() or "gas" in text.lower() or "oil" in text.lower() or "refill" in text.lower():
+                text_class=['gasbill']
+     
+            
+            elif "account statement" in text.lower() or "statement account" in text.lower() or "transaction" in text.lower() or "statement period" in text.lower():
                 text_class=["bankstatement"]
             elif "Jio DIGITAL LIFE" in text.lower() or "JioPostPaid Plus" in text.lower() or "Jio Number" in text.lower() or "Vodafone India Ltd Company" in text.lower() or "NNECT BROADBAND " in text.lower() or "MAHANAGAR TELEPHONE NIGAM LIMITED" in text.lower() or "TATA DOCOMO" in text.lower() or "BHARAT SANCHAR" in text.lower() or "net+ BROADBAND" in text.lower() or "broadband" in text.lower() or "telephone" in text.lower() :
                 print("This is PhoneBill")
@@ -214,6 +227,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         error = str(e)
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return{"error": error, "status": "unable to extract data"}
+
       
 @app.post("/text/GST_classifier/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):

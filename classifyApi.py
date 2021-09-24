@@ -321,4 +321,4 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
 
 if __name__ == "__main__":
-    uvicorn.run("classifyApi:app", host="0.0.0.0",port=19011, log_level="info", workers=1)
+    uvicorn.run("classifyApi:app", host="0.0.0.0",port=19022, log_level="info", workers=1)

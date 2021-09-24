@@ -228,7 +228,6 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return{"error": error, "status": "unable to extract data"}
 
-      
 @app.post("/text/GST_classifier/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:
@@ -297,6 +296,16 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             else:
                 text_class=["Cannot be Classified"]
                 response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+
+        if text_class[0]=='aadhar':
+            print("yesy====>")
+            text_class[0]="aadhar card"
+        elif text_class[0]=='pan':
+            text_class[0]="pan card"
+        else:
+            pass
+        
+        
         
         
         json = {"class": text_class[0]}

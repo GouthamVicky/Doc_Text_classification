@@ -50,7 +50,7 @@ def clean_text(text):
 
 
 
-@app.post("/text/classification/")
+@app.post("/text/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:
         response.status_code = status.HTTP_401_UNAUTHORIZED
@@ -126,7 +126,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
 
 
-@app.post("/text/classification/utility/")
+@app.post("/text/utility/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:
         response.status_code = status.HTTP_401_UNAUTHORIZED
@@ -228,7 +228,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return{"error": error, "status": "unable to extract data"}
 
-@app.post("/text/GST_classifier/")
+@app.post("/text/gst/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:
         response.status_code = status.HTTP_401_UNAUTHORIZED
@@ -321,4 +321,4 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
 
 
 if __name__ == "__main__":
-    uvicorn.run("classifyApi:app", host="0.0.0.0",port=19022, log_level="info", workers=1)
+    uvicorn.run("classifyApi:app", host="0.0.0.0",port=19018, log_level="info", workers=1)

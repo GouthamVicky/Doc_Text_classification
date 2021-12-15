@@ -49,7 +49,7 @@ def clean_text(text):
     return text
 
 
-
+@app.post("/text/classification/")
 @app.post("/text/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:
@@ -125,7 +125,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         return{"error": error, "status": "unable to extract data"}
 
 
-
+@app.post("/text/classification/utility/")
 @app.post("/text/utility/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:
@@ -228,6 +228,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return{"error": error, "status": "unable to extract data"}
 
+@app.post("/text/classification/gst/")
 @app.post("/text/gst/")
 def text(response: Response, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     if token != bearer_token:

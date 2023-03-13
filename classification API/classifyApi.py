@@ -22,7 +22,7 @@ from bs4 import BeautifulSoup
 app = FastAPI()
 
 
-bearer_token = '1SrFepgvVxPzjHQl6bBIqdim4JG2TRNfs'
+bearer_token = '---------token---------'
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 file_types_allowed = ['png', 'jpeg', 'jpg', 'JPEG', 'JPG', 'PNG']
 all_file_types_allowed = ['png', 'jpeg',
@@ -83,7 +83,7 @@ def text(response: Response, file: UploadFile = File(...), token: str = Depends(
             text = pdf_to_text(documentName)
 
         text=clean_text(text)
-        model = load("logreg_text_classification.pkl")
+        model = load("model/logreg_text_classification.pkl")
         print(text)
         value=[text]
         print(value)
